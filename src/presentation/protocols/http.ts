@@ -3,6 +3,7 @@ export interface HttpResponse {
   body: any
 }
 
+// GET NAO TEM BODY POR ISSO É OPCIONAL
 export interface HttpRequest {
   body?: any
 }
