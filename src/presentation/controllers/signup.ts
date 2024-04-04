@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { type AddAccount } from '../../domain/useCases/add-account'
 import { MissingParamError, InvalidParamError } from '../errors'
 import { badRequest, serverError } from '../helpers/http-helper'
 import { type Controller, type EmailValidator, type HttpRequest, type HttpResponse } from '../protocols'
 
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
+  private readonly addAcount: AddAccount
 
-  constructor (emailValidator: EmailValidator) {
+  constructor (emailValidator: EmailValidator, addAcount: AddAccount) {
     this.emailValidator = emailValidator
+    this.addAcount = addAcount
   }
 
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -19,7 +22,7 @@ export class SignUpController implements Controller {
           return badRequest(new MissingParamError(field))
         }
       }
-      const { email, password, passwordConfirmation } = httpRequest.body
+      const { name, email, password, passwordConfirmation } = httpRequest.body
 
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
@@ -30,6 +33,12 @@ export class SignUpController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
+      this.addAcount.add({
+        name,
+        email,
+        password
+      })
+
       return badRequest(new MissingParamError('badRequest'))
     } catch (error) {
       return serverError()
