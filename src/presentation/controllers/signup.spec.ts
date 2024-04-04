@@ -110,6 +110,24 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new MissingParamError('passwordConfirmation'))
   })
 
+  test('Should return 400 if no password confirmation fail', () => {
+    // SYSTEM UNDER TEST sut
+    const { sut } = makeSut()
+
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+        passwordConfirmation: 'invalid_password'
+      }
+    }
+
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toEqual(400)
+    expect(httpResponse.body).toEqual(new InvalidParamError('passwordConfirmation'))
+  })
+
   test('Should return 400 if an invalid email is provided', () => {
     // stub como false -> ele vai enviar como falso no this email validator da classe
     const { sut, emailValidatorStub } = makeSut()
@@ -163,6 +181,7 @@ describe('SignUp Controller', () => {
     }
 
     const httpResponse = sut.handle(httpRequest)
+
     expect(httpResponse.statusCode).toEqual(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
