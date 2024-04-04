@@ -1,14 +1,17 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-  collectCoverage: true,
-  collectCoverageFrom: ['<rootDir/src/**8/*.ts'],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
   coverageDirectory: 'coverage',
-  coverageProvider: 'v8',
   roots: [
     '<rootDir>/src'
   ],
-  testEnvironment: 'jest-environment-node',
+  modulePathIgnorePatterns: [
+    '/node_modules/',
+    '/build/',
+    '.*.import\\.ts$' // Expressão regular para ignorar arquivos terminados com _facilitator.ts
+  ],
+  testEnvironment: 'node',
   transform: {
     '.+\\.ts$': 'ts-jest'
   }
